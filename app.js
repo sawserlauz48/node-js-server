@@ -4,8 +4,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 const chalk = require("chalk")
 const cors = require('cors')
 const apiRouter = require("./routes/api")
