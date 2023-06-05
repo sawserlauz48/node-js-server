@@ -23,8 +23,10 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        match: RegExp(),
+        match: RegExp(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{6,})/),
         required: true,
+
     },
     web: URL,
     image: Image,
