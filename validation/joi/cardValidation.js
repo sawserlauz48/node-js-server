@@ -23,10 +23,14 @@ createCardSchema = Joi.object({
         street: Joi.string().min(2).max(256).required(),
         houseNumber: Joi.number().min(1).required(),
     }).required(),
-    bizNumber: Joi.number().min(1000000).max(9999999).required(),
+    bizNumber: Joi.number().min(1000000).max(9999999).allow(""),
     user_id: Joi.string().hex().length(24),
 })
 
+const idSchema = Joi.string().hex().required();
+
+const validateIdSchema = (userInput) => { return idSchema.validateAsync(userInput); }
+
 const validateCardSchema = (userInput) => { return createCardSchema.validateAsync(userInput); }
 
-module.exports = { validateCardSchema }
+module.exports = { validateCardSchema, validateIdSchema }

@@ -1,6 +1,6 @@
 const Card = require("./card");
 
-const createCard = (cardToSave) => {
+const createCard = async (cardToSave) => {
     let card = new Card(cardToSave)
     return card.save()
 }
@@ -14,14 +14,14 @@ const getCardsById = (id) => {
     return Card.findById(id)
 }
 const getCardByBizNumber = (bizNumber) => {
-    return Card.findOne({ bizNumber: bizNumber })
+    return Card.findOne({ bizNumber }, { bizNumber: 1, _id: 0 });
 }
-const updateCard = (id, cardToUpdate) => {
-    return Card.findByIdAndUpdate
+const updateCard = async (id, cardToUpdate) => {
+    return Card.findByIdAndUpdate(id, cardToUpdate, { new: true })
 }
 const likeCard = () => {
 }
-const deleteCard = (id) => {
+const deleteCard = async (id) => {
     return Card.findByIdAndDelete(id)
 }
 
@@ -33,5 +33,6 @@ module.exports = {
     updateCard,
     likeCard,
     deleteCard,
+    getCardByBizNumber
 
 }

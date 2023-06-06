@@ -1,4 +1,6 @@
-const normalizeCard = (card, userId) => {
+const generateBizNumber = require("./generateBizNumber");
+
+const normalizeCard = async (card, userId) => {
     if (!card.image) {
         card.image = {
 
@@ -13,7 +15,10 @@ const normalizeCard = (card, userId) => {
                 ...card.address,
                 state: card.address.state || ""
             },
-            bizNumber: card.bizNumber || ""
+            bizNumber: card.bizNumber || (await generateBizNumber()),
+            user_id: card.user_id || userId,
         }
     }
 }
+
+module.exports = normalizeCard;
