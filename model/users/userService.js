@@ -1,27 +1,25 @@
 const User = require("./user");
 
-const createCard = (cardToSave) => {
-    let card = new Card(cardToSave)
-    return card.save()
+const registerUser = (userData) => {
+    let user = new User(userData)
+    return user.save()
 }
 
-const registerUser = () => {
-    return Card.find()
-}
 const loginUser = () => {
-    return Card.find()
 }
 const getAllUsers = () => {
-    return Card.find()
+    return User.find()
 }
-const getUserById = () => {
-    return Card.find()
+const getUserById = (id) => {
+    return User.findById(id)
+
 }
-const editUser = () => {
-    return Card.find()
+const editUser = (id, UserToUpdate) => {
+    return User.findByIdAndUpdate(id, UserToUpdate, { new: true })
+
 }
-const deleteUser = () => {
-    return Card.find()
+const deleteUser = (id) => {
+    return User.findByIdAndDelete(id)
 }
 
 module.exports = {

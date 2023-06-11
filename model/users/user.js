@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Image = require("../cards/image");
 const Address = require("../cards/Address");
 const Name = require("./name");
-const { DEFAULT_STRING_SCHEMA_REQUIRED, URL } = require("./helpers/mongooseValitation");
+const { URL } = require("../cards/helpers/mongooseValitation");
 
 const userSchema = new mongoose.Schema({
 
@@ -31,13 +31,8 @@ const userSchema = new mongoose.Schema({
     web: URL,
     image: Image,
     address: Address,
-    bizNumber: {
-        type: Number,
-        minLength: 7,
-        maxLength: 7,
-        trim: true,
-    },
-    likes: [String],
+    isAdmin: { type: Boolean, default: false },
+    isBiz: { type: Boolean, default: false },
     createdAt: {
         type: Date,
         default: Date.now

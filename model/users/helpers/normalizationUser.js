@@ -1,24 +1,24 @@
 
-const normalizeUser = async (user, userId) => {
+const normalizeUser = (userData) => {
 
 
-    if (!user.image) {
-        user.image = {}
+    if (!userData.image) {
+        userData.image = {}
     }
-    user.image = {
-        url: user.image.url || "https://kubalubra.is/wp-content/uploads/2017/11/default-thumbnail-300x225.jpg",
-        alt: user.image.alt || "user defult picture",
+    userData.image = {
+        url: userData.image.url || "https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg",
+        alt: userData.image.alt || "user defult picture",
     }
     return {
-        ...user,
+        ...userData,
         address: {
-            ...user.address,
-            state: user.address.state || ""
+            ...userData.address,
+            state: userData.address.state || ""
         },
-        bizNumber: user.bizNumber || (await generateBizNumber()),
-        user_id: user.user_id || userId,
     }
 }
+
+
 
 
 module.exports = normalizeUser;

@@ -25,7 +25,7 @@ createCardSchema = Joi.object({
     }).required(),
     bizNumber: Joi.number().min(1000000).max(9999999).allow(""),
     user_id: Joi.string().hex().length(24),
-})
+});
 
 const idSchema = Joi.string().hex().required();
 

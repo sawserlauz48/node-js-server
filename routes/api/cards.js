@@ -57,7 +57,11 @@ router.get("/:id", async (req, res) => {
     try {
         await cardsValidationService.createCardIdValidation(req.params.id);
         const deletCard = await cardServiceModel.deleteCard(req.params.id)
-        res.json({ msg: "card has been deleted", deletCard })
+        if (deletCard) {
+            res.json({ msg: "card has been deleted" })
+        } else {
+            res.json({ msg: "could not find the card" })
+        }
     } catch (err) {
         res.status(400).json(err);
     }
