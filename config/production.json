@@ -1,0 +1,5 @@
+{
+  "dbConfig": {
+    "url": "mongodb+srv://admin:Aa123456@cluster0.3alw0kw.mongodb.net/"
+  }
+}

@@ -3,12 +3,15 @@ const router = express.Router();
 const bcrypt = require("../../config/bcrypt");
 const userValidationService = require("../../validation/userValidationService");
 const normalizeUser = require("../../model/users/helpers/normalizationUser");
-const usersServiceModel = require("../../model/users/userService")
+const usersServiceModel = require("../../model/users/userService");
+const jwt = require("../../config/jwt");
+const CustomError = require("../../utils/CustomError")
+
 
 
 router.post("/", async (req, res) => {
     try {
-        await registerUserValidation(req.body);
+        await userValidationService.registerUserValidation(req.body);
         req.body.password = await bcrypt.generateHash(req.body.password);
         req.body = normalizeUser(req.body);
         await usersServiceModel.registerUser(req.body);
@@ -67,5 +70,25 @@ router.get("/:id", async (req, res) => {
         }
 
     });
+
+router.post("/login", async (req, res) => {
+    try {
+        await userValidationService.LoginUserValidation(req.body);
+        const userData = await usersServiceModel.getUserByEmail
+            (req.body.email);
+        if (!userData) throw new CustomError("invaled email or password");
+        const isPasswordMatch = await bcrypt.compereHash(req.body.password, userData.password);
+        if (!isPasswordMatch) throw new CustomError("invaled email or password");
+        const token = await jwt.generateToken({
+            _id: userData._id,
+            isAdmin: userData.isAdmin,
+            isBusiness: userData.isBiz,
+        })
+        res.json({ token });
+    } catch (error) {
+        res.status(400).json(error);
+
+    }
+})
 
 module.exports = router;

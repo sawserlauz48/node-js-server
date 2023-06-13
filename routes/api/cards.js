@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const cardServiceModel = require("../../model/cards/cardService")
+const cardServiceModel = require("../../model/cards/cardService");
 const cardsValidationService = require("../../validation/cardsValidationService");
-const normalizeCard = require("../../model/cards/helpers/normalizationCard")
+const normalizeCard = require("../../model/cards/helpers/normalizationCard");
+const authMw = require("../../middleware/authMiddleware");
+const permissionsMiddleware = require("../../middleware/permissionsMiddleware");
 
 router.get("/", async (req, res) => {
     try {
@@ -12,10 +14,10 @@ router.get("/", async (req, res) => {
         res.status(400).json(err);
     }
 })
-    .post("/", async (req, res) => {
+    .post("/", authMw, async (req, res) => {
         try {
             await cardsValidationService.createCardValidation(req.body);
-            let normalCard = await normalizeCard(req.body);
+            let normalCard = await normalizeCard(req.body, req.userData._id);
             const dateFromMongoose = await cardServiceModel.createCard(normalCard);
             res.status(201).json(dateFromMongoose);
         }
@@ -53,7 +55,7 @@ router.get("/:id", async (req, res) => {
         res.status(400).json(err);
     }
 
-}).delete("/:id", async (req, res) => {
+}).delete("/:id", authMw, permissionsMiddleware(false, true, true), async (req, res) => {
     try {
         await cardsValidationService.createCardIdValidation(req.params.id);
         const deletCard = await cardServiceModel.deleteCard(req.params.id)

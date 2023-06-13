@@ -22,6 +22,10 @@ const deleteUser = (id) => {
     return User.findByIdAndDelete(id)
 }
 
+const getUserByEmail = (email) => {
+    return User.findOne({ email });
+}
+
 module.exports = {
     registerUser,
     loginUser,
@@ -29,4 +33,5 @@ module.exports = {
     getUserById,
     editUser,
     deleteUser,
+    getUserByEmail,
 }
