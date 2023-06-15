@@ -4,9 +4,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 
-const chalk = require("chalk")
-const cors = require('cors')
-const apiRouter = require("./routes/api")
+
+const chalk = require("chalk");
+const cors = require('cors');
+const apiRouter = require("./routes/api");
+const initailData = require("./initailData/initailData");
+
 
 var app = express();
 
@@ -31,7 +34,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+initailData();
 app.use("/api", apiRouter)
 
 app.use((req, res, next) => {

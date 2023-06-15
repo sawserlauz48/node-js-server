@@ -1,0 +1,48 @@
+[
+  {
+    "title": "Alice Thompson",
+    "subTitle": "Software Engineer",
+    "description": "Alice Thompson is a skilled software engineer specializing in designing, developing, and maintaining software applications. She collaborates with cross-functional teams to analyze project requirements and propose technical solutions. Alice writes clean, well-documented code and conducts thorough testing to ensure optimal performance. She possesses strong problem-solving skills and stays updated with the latest industry trends.",
+    "phone": "0521234567",
+    "email": "alice.thompson@example.com",
+    "address": {
+      "country": "Countryland",
+      "city": "Cityville",
+      "street": "Oak Street",
+      "houseNumber": 1234,
+      "zip": 1234
+    }
+  },
+  {
+    "title": "Benjamin Davis",
+    "subTitle": "Graphic Designer",
+    "description": "Benjamin Davis is a creative graphic designer experienced in visual communication. He conceptualizes and designs visually appealing graphics for various mediums, collaborating with clients to understand their design needs and target audience. Benjamin has a keen eye for detail and a strong sense of aesthetics.",
+    "phone": "0541234567",
+    "email": "benjamin.davis@example.com",
+    "address": {
+      "country": "Countria",
+      "city": "Townsville",
+      "street": "Elm Street",
+      "houseNumber": 5678,
+      "zip": 5678
+    }
+  },
+  {
+    "title": "Ethan Wilson",
+    "subTitle": "Financial Analyst",
+    "description": "Ethan Wilson is a meticulous financial analyst. He conducts in-depth financial research, analyzes data, and prepares financial reports. Ethan provides insights and recommendations to support informed business decisions and assists in budgeting and forecasting processes.",
+    "phone": "0531234567",
+    "email": "ethan.wilson@example.com",
+    "address": {
+      "country": "Countryside",
+      "city": "Villageland",
+      "street": "Maple Street",
+      "houseNumber": 9012,
+      "zip": 9012
+    },
+    "image": {
+      "url": "https://kubalubra.is/wp-content/uploads/2017/11/default-thumbnail-300x225.jpg",
+      "alt": "card defult picture"
+    }
+  }
+]

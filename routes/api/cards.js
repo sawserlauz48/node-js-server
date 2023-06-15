@@ -55,7 +55,7 @@ router.get("/:id", async (req, res) => {
         res.status(400).json(err);
     }
 
-}).delete("/:id", authMw, permissionsMiddleware(false, true, true), async (req, res) => {
+}).delete("/:id", authMw, permissionsMiddleware(false, false, true), async (req, res) => {
     try {
         await cardsValidationService.createCardIdValidation(req.params.id);
         const deletCard = await cardServiceModel.deleteCard(req.params.id)

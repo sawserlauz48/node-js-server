@@ -1,0 +1,50 @@
+[
+  {
+    "name": {
+      "firstName": "admin",
+      "lastName": "admin"
+    },
+    "phone": "0500000001",
+    "email": "admin@gmail.com",
+    "password": "Aa123456!",
+    "address": {
+      "country": "Israel",
+      "city": "Ashkeluna",
+      "street": "admin street",
+      "houseNumber": 1
+    },
+    "isAdmin": true,
+    "isBiz": false
+  },
+  {
+    "name": {
+      "firstName": "nothing",
+      "lastName": "nothing"
+    },
+    "phone": "0500000003",
+    "email": "nothing@gmail.com",
+    "password": "Aa123456!",
+    "address": {
+      "country": "Israel",
+      "city": "Ashkeluna",
+      "street": "nothing street",
+      "houseNumber": 3
+    }
+  },
+  {
+    "name": {
+      "firstName": "Business",
+      "lastName": "Business"
+    },
+    "phone": "0500000002",
+    "email": "Business@gmail.com",
+    "password": "Aa123456!",
+    "address": {
+      "country": "Israel",
+      "city": "Ashkeluna",
+      "street": "Business street",
+      "houseNumber": 2
+    },
+    "isBiz": true
+  }
+]
