@@ -12,6 +12,7 @@ const CheckIfBizOwner = async (idUser, idCard, res, next) => {
             return res.status(400).json({ msg: "card not found" });
         }
         if (cardData.user_id == idUser) {
+            console.log(chalk.greenBright("The card has been updated"));
             next()
         } else {
             console.log(chalk.redBright("User must be the business owner"));
@@ -23,13 +24,13 @@ const CheckIfBizOwner = async (idUser, idCard, res, next) => {
 
 }
 
-const permissionsMiddleware = (isBiz, isAdmin, isBizOwner) => {
+const permissionsMiddleware = (isBusiness, isAdmin, isBizOwner) => {
     return (req, res, next) => {
         if (!req.userData) {
             console.log(chalk.redBright("userData was not provided"));
             throw new CustomError("Must provide userData");
         }
-        if (isBiz === req.userData.isBusiness && isBiz === true) {
+        if (isBusiness === req.userData.isBusiness && isBusiness === true) {
             return next()
         }
         if (isAdmin === req.userData.isAdmin && isAdmin === true) {
@@ -39,7 +40,7 @@ const permissionsMiddleware = (isBiz, isAdmin, isBizOwner) => {
             return CheckIfBizOwner(req.userData._id, req.params.id, res, next);
         }
         console.log(chalk.redBright("The user is not allowed to edit the card"));
-        res.status(401).json({ msg: "You are not allowed to edit this card" });
+        res.status(401).json({ msg: "You are not allowed to edit/create this card" });
     };
 
 

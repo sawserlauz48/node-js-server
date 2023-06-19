@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Image = require("../cards/image");
 const Address = require("../cards/Address");
 const Name = require("./name");
-const { URL } = require("../cards/helpers/mongooseValitation");
+const { URL } = require("../cards/helpers/mongooseValidation");
 
 const userSchema = new mongoose.Schema({
 
@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
     image: Image,
     address: Address,
     isAdmin: { type: Boolean, default: false },
-    isBiz: { type: Boolean, default: false },
+    isBusiness: { type: Boolean, default: false },
     createdAt: {
         type: Date,
         default: Date.now

@@ -1,7 +1,6 @@
 const joiCardsValidation = require("./joi/cardValidation");
 const config = require("config");
 
-
 const validatorOption = config.get("validatorOption");
 
 

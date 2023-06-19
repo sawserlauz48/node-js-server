@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
         res.status(400).json(err);
     }
 })
-    .post("/", authMw, async (req, res) => {
+    .post("/", authMw, permissionsMiddleware(true, false, false), async (req, res) => {
         try {
             await cardsValidationService.createCardValidation(req.body);
             let normalCard = await normalizeCard(req.body, req.userData._id);
@@ -22,11 +22,17 @@ router.get("/", async (req, res) => {
             res.status(201).json(dateFromMongoose);
         }
         catch (err) {
-            console.log(err);
             res.status(400).json(err)
         }
     });
 
+router.get("/my-cards", authMw, permissionsMiddleware(false, false, true), async (req, res) => {
+    try {
+
+    } catch (error) {
+
+    }
+})
 
 router.get("/:id", async (req, res) => {
     try {
@@ -36,7 +42,7 @@ router.get("/:id", async (req, res) => {
     } catch (err) {
         res.status(400).json("invaled id couldnt find the card");
     }
-}).put(("/:id"), async (req, res) => {
+}).put(("/:id"), authMw, permissionsMiddleware(false, false, true), async (req, res) => {
     try {
         await cardsValidationService.createCardIdValidation(req.params.id);
         let cardAfterValidation = await cardsValidationService.createCardValidation(req.body)

@@ -14,7 +14,7 @@
       "houseNumber": 1
     },
     "isAdmin": true,
-    "isBiz": false
+    "isBusiness": false
   },
   {
     "name": {
@@ -45,6 +45,6 @@
       "street": "Business street",
       "houseNumber": 2
     },
-    "isBiz": true
+    "isBusiness": true
   }
 ]

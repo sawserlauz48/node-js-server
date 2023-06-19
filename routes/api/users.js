@@ -82,7 +82,7 @@ router.post("/login", async (req, res) => {
         const token = await jwt.generateToken({
             _id: userData._id,
             isAdmin: userData.isAdmin,
-            isBusiness: userData.isBiz,
+            isBusiness: userData.isBusiness,
         })
         res.json({ token });
     } catch (error) {

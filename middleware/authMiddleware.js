@@ -5,8 +5,10 @@ const CustomError = require("../utils/CustomError");
 
 const authMiddleware = async (req, res, next) => {
     try {
-        if (!req.headers["x-auth-token"]) throw new CustomError("please provide token");
-        console.log(chalk.redBright("User didn't provide token!"));
+        if (!req.headers["x-auth-token"]) {
+            throw new CustomError("please provide token");
+            console.log(chalk.redBright("User didn't provide token!"));
+        }
         const userData = await jwt.verifyToken(req.headers["x-auth-token"]);
         if (!userData) {
             console.log(chalk.redBright("Invalid Token!"));

@@ -1,6 +1,6 @@
 const Card = require("./card");
 
-const createCard = async (cardToSave) => {
+const createCard = (cardToSave) => {
     let card = new Card(cardToSave)
     return card.save()
 }
@@ -8,8 +8,8 @@ const createCard = async (cardToSave) => {
 const getAllCards = () => {
     return Card.find()
 }
-const getMyCards = () => {
-
+const getMyCards = (user_id) => {
+    return Card.find({ user_id })
 }
 const getCardsById = (id) => {
     return Card.findById(id)
