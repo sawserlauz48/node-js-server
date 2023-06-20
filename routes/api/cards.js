@@ -10,9 +10,13 @@ const chalk = require("chalk");
 router.get("/", async (req, res) => {
     try {
         const allCards = await cardServiceModel.getAllCards();
-        res.json(allCards);
-    } catch (err) {
+        res.json({ allCards });
+        console.log(chalk.greenBright("The cards has been found"))
+
+    } catch (error) {
         res.status(400).json(err);
+        console.log(chalk.redBright("Could'nt find the cards", error))
+
     }
 })
     .post("/", authMw, permissionsMiddleware(true, false, false), async (req, res) => {
@@ -21,15 +25,25 @@ router.get("/", async (req, res) => {
             let normalCard = await normalizeCard(req.body, req.userData._id);
             const dateFromMongoose = await cardServiceModel.createCard(normalCard);
             res.status(201).json(dateFromMongoose);
+            console.log(chalk.greenBright("The cards has been created"))
         }
-        catch (err) {
-            res.status(400).json(err)
+        catch (error) {
+            res.status(400).json({ error })
+            console.log(chalk.redBright("Could'nt create the cards", error))
+
         }
     });
 
 router.get("/my-cards", authMw, async (req, res) => {
-    let allMyCards = await cardServiceModel.getAllCards(req.userData._id);
-    res.json(allMyCards)
+    try {
+        let allMyCards = await cardServiceModel.getAllCards(req.userData._id);
+        res.json({ allMyCards });
+        console.log(chalk.greenBright("The cards has been found"))
+    } catch (error) {
+        res.status(400).json({ error });
+        console.log(chalk.redBright("Could'nt find the cards", error))
+
+    }
 })
 
 router.get("/:id", async (req, res) => {
@@ -37,8 +51,13 @@ router.get("/:id", async (req, res) => {
         await cardsValidationService.createCardIdValidation(req.params.id);
         const cardById = await cardServiceModel.getCardsById(req.params.id);
         res.json(cardById);
+        console.log(chalk.greenBright("The card has been found"))
+
     } catch (err) {
         res.status(400).json("invaled id couldnt find the card");
+        console.log(chalk.redBright("Could'nt find the card", err))
+
+
     }
 }).put(("/:id"), authMw, permissionsMiddleware(false, false, true), async (req, res) => {
     try {
@@ -46,9 +65,12 @@ router.get("/:id", async (req, res) => {
         let cardAfterValidation = await cardsValidationService.createCardValidation(req.body)
         let cardAfterNormalize = await normalizeCard(cardAfterValidation);
         const cardFromDB = await cardServiceModel.updateCard(req.params.id, cardAfterNormalize);
-        res.json(cardFromDB)
+        res.json({ msg: "The card has been edited", cardFromDB })
+        console.log(chalk.greenBright("The card has been edited"))
     } catch (err) {
         res.status(400).json(err);
+        console.log(chalk.redBright("Could'nt edit the card", err))
+
     }
 
 }).patch("/:id", authMw, async (req, res) => {
@@ -60,13 +82,13 @@ router.get("/:id", async (req, res) => {
             cardToLike.likes.push(req.userData._id);
             await cardServiceModel.likeCard(cardToLike);
             console.log(chalk.greenBright("The card has been liked"));
-            return res.json({ msg: "The card has been liked" });
+            return res.json({ msg: "The card has been liked", cardToLike });
         }
         const cardFilterd = cardToLike.likes.filter((id) => id !== req.userData._id);
         cardToLike.likes = cardFilterd;
         await cardServiceModel.likeCard(cardToLike);
         console.log(chalk.greenBright("The card has been unliked"));
-        return res.json({ msg: "The card has been unliked" });
+        return res.json({ msg: "The card has been unliked", cardToLike });
     } catch (err) {
         console.log(chalk.redBright("Could not edit like:", err.message));
         return res.status(500).send(err.message);
@@ -77,9 +99,11 @@ router.get("/:id", async (req, res) => {
         await cardsValidationService.createCardIdValidation(req.params.id);
         const deletCard = await cardServiceModel.deleteCard(req.params.id)
         if (deletCard) {
-            res.json({ msg: "card has been deleted" })
+            res.json({ msg: "card has been deleted", deletCard })
+            console.log(chalk.greenBright("The card has been deleted"))
         } else {
-            res.json({ msg: "could not find the card" })
+            res.json({ msg: "Could not find the card" })
+            console.log(chalk.redBright("Could not find the card"))
         }
     } catch (err) {
         res.status(400).json(err);

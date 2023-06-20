@@ -5,7 +5,12 @@ const userValidationService = require("../../validation/userValidationService");
 const normalizeUser = require("../../model/users/helpers/normalizationUser");
 const usersServiceModel = require("../../model/users/userService");
 const jwt = require("../../config/jwt");
-const CustomError = require("../../utils/CustomError")
+const CustomError = require("../../utils/CustomError");
+const authMw = require("../../middleware/authMiddleware");
+const permissionsMiddleware = require("../../middleware/permissionsMiddleware");
+const chalk = require("chalk");
+
+
 
 
 
@@ -14,59 +19,90 @@ router.post("/", async (req, res) => {
         await userValidationService.registerUserValidation(req.body);
         req.body.password = await bcrypt.generateHash(req.body.password);
         req.body = normalizeUser(req.body);
-        await usersServiceModel.registerUser(req.body);
-        res.json({ msg: "user has been registerd" });
+        let newUser = await usersServiceModel.registerUser(req.body);
+        res.status(201).json({ msg: "The user has been registerd", newUser });
+        console.log(chalk.greenBright("The user has been registerd"))
+
     } catch (error) {
         res.status(400).json(error);
+        console.log(chalk.redBright("Could'nt regester the user", error))
+
     }
-}).get("/", async (req, res) => {
+}).get("/", authMw, permissionsMiddleware(false, true, false), async (req, res) => {
     try {
         const allUsers = await usersServiceModel.getAllUsers();
-        res.json(allUsers);
+        res.status(200).json({ allUsers });
+        console.log(chalk.greenBright("Successfully acquired all the users"));
     } catch (error) {
-        res.status(400).json(err);
+        res.status(400).json({ error });
+        console.log(chalk.redBright("Could'nt acquired the users", error));
+
     }
 })
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", authMw, permissionsMiddleware(true, true, true), async (req, res) => {
     try {
         await userValidationService.createUserIdValidation(req.params.id);
         const userById = await usersServiceModel.getUserById(req.params.id);
-        res.json(userById);
+        res.status(200).json({ msg: "Successfully acquired the users", userById });
+        console.log(chalk.greenBright("Successfully acquired the users"));
 
     } catch (error) {
-        res.status(400).json("invaled id couldnt find the user")
+        res.status(400).json({ msg: "invaled id couldnt find the user" });
+        console.log(chalk.redBright("Could'nt acquired the users", error));
     }
 })
-    .put("/:id", async (req, res) => {
+    .put("/:id", authMw, permissionsMiddleware(true, true, true), async (req, res) => {
         try {
             await userValidationService.createUserIdValidation(req.params.id);
             let userAfterValidation = await usersServiceModel.registerUserValidation(req.body);
             let userAfterNormlize = await normalizeUser(userAfterValidation);
             const userFromDb = await usersServiceModel.editUser(req.params.id, userAfterNormlize);
-            res.json(userFromDb)
+            res.status(200).json({ msg: "Successfully edited the user", userFromDb });
+            console.log(chalk.greenBright("Successfully edited the user"));
+
         } catch (error) {
-            res.status(400).json(err);
+            res.status(400).json(error);
+            console.log(chalk.redBright("Could'nt edit the user", error));
+
         }
     })
-    .patch("/:id", async (req, res) => {
+    .patch("/:id", authMw, permissionsMiddleware(true, true, true), async (req, res) => {
         try {
-
+            await userValidationService.createUserIdValidation(req.params.id);
+            const user = await usersServiceModel.getUserById(req.params.id)
+            const userId = { _id: (req.params.id) };
+            if (user.isBusiness === true) {
+                const setIsBusiness = { $set: { isBusiness: false } };
+                await usersServiceModel.bizUserChange(userId, setIsBusiness);
+                console.log(chalk.greenBright("The user changed to normal account"));
+                return res.status(200).json({ msg: "The user changed to normal account", user });
+            } if (user.isBusiness === false) {
+                const setIsBusiness = { $set: { isBusiness: true } };
+                await usersServiceModel.bizUserChange(userId, setIsBusiness);
+                console.log(chalk.greenBright("The user changed to business account"));
+                return res.status(200).json({ msg: "The user changed to business account", user });
+            }
         } catch (error) {
-
+            console.log(chalk.redBright("Could'nt edit the user", error));
+            res.status(400).json({ msg: "Could'nt edit the user", error })
         }
     })
-    .delete("/:id", async (req, res) => {
+    .delete("/:id", authMw, permissionsMiddleware(true, true, true), async (req, res) => {
         try {
             await userValidationService.createUserIdValidation(req.params.id);
             const deletUser = await usersServiceModel.deleteUser(req.params.id)
             if (deletUser) {
-                res.json({ msg: "user has been deleted" })
+                res.json({ msg: "user has been deleted", deletUser })
+                console.log(chalk.greenBright("user has been deleted"));
             } else {
-                res.json({ msg: "could not find the user" })
+                res.json({ msg: "Could not delete the user" })
+                console.log(chalk.redBright("Could not delete the user"));
             }
-        } catch (err) {
-            res.status(400).json(err);
+        } catch (error) {
+            res.status(400).json(error);
+            console.log(chalk.redBright("Could not delete the user", error));
+
         }
 
     });
@@ -84,10 +120,9 @@ router.post("/login", async (req, res) => {
             isAdmin: userData.isAdmin,
             isBusiness: userData.isBusiness,
         })
-        res.json({ token });
+        res.status(200).json({ token });
     } catch (error) {
         res.status(400).json(error);
-
     }
 })
 

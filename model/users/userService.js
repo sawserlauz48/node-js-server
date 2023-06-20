@@ -25,6 +25,9 @@ const deleteUser = (id) => {
 const getUserByEmail = (email) => {
     return User.findOne({ email });
 }
+const bizUserChange = async (filter, update) => {
+    return User.updateOne(filter, update)
+}
 
 module.exports = {
     registerUser,
@@ -34,4 +37,5 @@ module.exports = {
     editUser,
     deleteUser,
     getUserByEmail,
+    bizUserChange
 }
