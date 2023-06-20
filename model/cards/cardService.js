@@ -9,7 +9,7 @@ const getAllCards = () => {
     return Card.find()
 }
 const getMyCards = (user_id) => {
-    return Card.find({ user_id })
+    return Card.find({ user_id: ObjectId(user_id) })
 }
 const getCardsById = (id) => {
     return Card.findById(id)
@@ -20,8 +20,9 @@ const getCardByBizNumber = (bizNumber) => {
 const updateCard = async (id, cardToUpdate) => {
     return Card.findByIdAndUpdate(id, cardToUpdate, { new: true })
 }
-const likeCard = (id) => {
-
+const likeCard = async (cardToSave) => {
+    let card = Card(cardToSave)
+    return card.save()
 }
 const deleteCard = async (id) => {
     return Card.findByIdAndDelete(id)

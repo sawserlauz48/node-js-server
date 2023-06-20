@@ -5,6 +5,7 @@ const cardsValidationService = require("../../validation/cardsValidationService"
 const normalizeCard = require("../../model/cards/helpers/normalizationCard");
 const authMw = require("../../middleware/authMiddleware");
 const permissionsMiddleware = require("../../middleware/permissionsMiddleware");
+const chalk = require("chalk");
 
 router.get("/", async (req, res) => {
     try {
@@ -26,12 +27,9 @@ router.get("/", async (req, res) => {
         }
     });
 
-router.get("/my-cards", authMw, permissionsMiddleware(false, false, true), async (req, res) => {
-    try {
-
-    } catch (error) {
-
-    }
+router.get("/my-cards", authMw, async (req, res) => {
+    let allMyCards = await cardServiceModel.getAllCards(req.userData._id);
+    res.json(allMyCards)
 })
 
 router.get("/:id", async (req, res) => {
@@ -53,12 +51,25 @@ router.get("/:id", async (req, res) => {
         res.status(400).json(err);
     }
 
-}).patch("/:id", async (req, res) => {
+}).patch("/:id", authMw, async (req, res) => {
     try {
         await cardsValidationService.createCardIdValidation(req.params.id);
-
+        const cardToLike = await cardServiceModel.getCardsById(req.params.id);
+        const cardLikes = cardToLike.likes.find((id) => id === req.userData._id)
+        if (!cardLikes) {
+            cardToLike.likes.push(req.userData._id);
+            await cardServiceModel.likeCard(cardToLike);
+            console.log(chalk.greenBright("The card has been liked"));
+            return res.json({ msg: "The card has been liked" });
+        }
+        const cardFilterd = cardToLike.likes.filter((id) => id !== req.userData._id);
+        cardToLike.likes = cardFilterd;
+        await cardServiceModel.likeCard(cardToLike);
+        console.log(chalk.greenBright("The card has been unliked"));
+        return res.json({ msg: "The card has been unliked" });
     } catch (err) {
-        res.status(400).json(err);
+        console.log(chalk.redBright("Could not edit like:", err.message));
+        return res.status(500).send(err.message);
     }
 
 }).delete("/:id", authMw, permissionsMiddleware(false, false, true), async (req, res) => {
@@ -76,8 +87,5 @@ router.get("/:id", async (req, res) => {
 
 });
 
-router.get("/my-cards", async (req, res) => {
-
-})
 
 module.exports = router;
