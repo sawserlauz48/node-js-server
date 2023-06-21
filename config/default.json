@@ -1,3 +1,6 @@
 {
-  "validatorOption": "Joi"
+  "validatorOption": "Joi",
+  "hashOption": "bcryptjs",
+  "tokenOption": "jwt",
+  "dbOption": "mongo"
 }

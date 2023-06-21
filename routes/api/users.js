@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("../../config/bcrypt");
+const hashService = require("../../utils/hash/hashService");
 const userValidationService = require("../../validation/userValidationService");
-const normalizeUser = require("../../model/users/helpers/normalizationUser");
-const usersServiceModel = require("../../model/users/userService");
-const jwt = require("../../config/jwt");
+const normalizeUser = require("../../model/usersService/helpers/normalizationUserService");
+const usersServiceModel = require("../../model/usersService/usersService");
+const tokenService = require("../../utils/token/tokenService");
 const CustomError = require("../../utils/CustomError");
 const authMw = require("../../middleware/authMiddleware");
 const permissionsMiddleware = require("../../middleware/permissionsMiddleware");
@@ -17,7 +17,7 @@ const chalk = require("chalk");
 router.post("/", async (req, res) => {
     try {
         await userValidationService.registerUserValidation(req.body);
-        req.body.password = await bcrypt.generateHash(req.body.password);
+        req.body.password = await hashService.generateHash(req.body.password);
         req.body = normalizeUser(req.body);
         let newUser = await usersServiceModel.registerUser(req.body);
         res.status(201).json({ msg: "The user has been registerd", newUser });
@@ -52,7 +52,7 @@ router.get("/:id", authMw, permissionsMiddleware(true, true, true), async (req, 
         console.log(chalk.redBright("Could'nt acquired the users", error));
     }
 })
-    .put("/:id", authMw, permissionsMiddleware(true, true, true), async (req, res) => {
+    .put("/:id", authMw, permissionsMiddleware(false, false, true), async (req, res) => {
         try {
             await userValidationService.createUserIdValidation(req.params.id);
             let userAfterValidation = await usersServiceModel.registerUserValidation(req.body);
@@ -67,7 +67,7 @@ router.get("/:id", authMw, permissionsMiddleware(true, true, true), async (req, 
 
         }
     })
-    .patch("/:id", authMw, permissionsMiddleware(true, true, true), async (req, res) => {
+    .patch("/:id", authMw, permissionsMiddleware(false, false, true), async (req, res) => {
         try {
             await userValidationService.createUserIdValidation(req.params.id);
             const user = await usersServiceModel.getUserById(req.params.id)
@@ -88,7 +88,7 @@ router.get("/:id", authMw, permissionsMiddleware(true, true, true), async (req, 
             res.status(400).json({ msg: "Could'nt edit the user", error })
         }
     })
-    .delete("/:id", authMw, permissionsMiddleware(true, true, true), async (req, res) => {
+    .delete("/:id", authMw, permissionsMiddleware(false, true, true), async (req, res) => {
         try {
             await userValidationService.createUserIdValidation(req.params.id);
             const deletUser = await usersServiceModel.deleteUser(req.params.id)
@@ -113,9 +113,9 @@ router.post("/login", async (req, res) => {
         const userData = await usersServiceModel.getUserByEmail
             (req.body.email);
         if (!userData) throw new CustomError("invaled email or password");
-        const isPasswordMatch = await bcrypt.compereHash(req.body.password, userData.password);
+        const isPasswordMatch = await hashService.compereHash(req.body.password, userData.password);
         if (!isPasswordMatch) throw new CustomError("invaled email or password");
-        const token = await jwt.generateToken({
+        const token = await tokenService.generateToken({
             _id: userData._id,
             isAdmin: userData.isAdmin,
             isBusiness: userData.isBusiness,

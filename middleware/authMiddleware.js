@@ -1,4 +1,4 @@
-const jwt = require("../config/jwt");
+const tokenService = require("../utils/token/tokenService");
 const chalk = require("chalk");
 
 const CustomError = require("../utils/CustomError");
@@ -9,7 +9,7 @@ const authMiddleware = async (req, res, next) => {
             throw new CustomError("please provide token");
             console.log(chalk.redBright("User didn't provide token!"));
         }
-        const userData = await jwt.verifyToken(req.headers["x-auth-token"]);
+        const userData = await tokenService.verifyToken(req.headers["x-auth-token"]);
         if (!userData) {
             console.log(chalk.redBright("Invalid Token!"));
             return res.status(401).json({ msg: "Invalid  Token!" });

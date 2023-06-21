@@ -9,14 +9,15 @@ var debug = require('debug')('node-js-server:server');
 var http = require('http');
 
 const chalk = require('chalk')
-const connectToDB = require("../model/connectToDB")
+const connectToDBService = require("../model/connectToDBService")
 
-connectToDB.then(() => {
-  console.log(chalk.yellow.bold("Connected to mongoDB"))
-}).catch(err => {
-  console.log(chalk.red.bold(err));
-  process.exit(1);
-});
+connectToDBService()
+  .then(() => {
+    console.log(chalk.yellow.bold("Connected to mongoDB"))
+  }).catch(err => {
+    console.log(chalk.red.bold(err));
+    process.exit(1);
+  });
 /**
  * Get port from environment and store in Express.
  */

@@ -34,7 +34,7 @@ const createCardSchema = Joi.object({
         street: Joi.string().min(2).max(256).required(),
         houseNumber: Joi.number().min(1).required(),
         zip: Joi.number().allow("", 0),
-    }),
+    }).required(),
     bizNumber: Joi.number().min(1000000).max(9999999).allow(""),
     user_id: Joi.string().hex().length(24),
 });
