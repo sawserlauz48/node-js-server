@@ -6,6 +6,7 @@ const normalizeCard = require("../../model/cardsService/helpers/normalizationCar
 const authMw = require("../../middleware/authMiddleware");
 const permissionsMiddleware = require("../../middleware/permissionsMiddleware");
 const chalk = require("chalk");
+const { stubFalse } = require("lodash");
 
 router.get("/", async (req, res) => {
     try {
@@ -36,9 +37,14 @@ router.get("/", async (req, res) => {
 
 router.get("/my-cards", authMw, async (req, res) => {
     try {
-        let allMyCards = await cardServiceModel.getAllCards(req.userData._id);
-        res.json({ allMyCards });
-        console.log(chalk.greenBright("The cards has been found"))
+        let allMyCards = await cardServiceModel.getMyCards(req.userData._id);
+        if (allMyCards.length === 0) {
+            console.log(chalk.greenBright("The user don't have cards yet!"));
+            return res.json({ msg: "The user don't have cards yet!" });
+        } else {
+            console.log(chalk.greenBright("Fetched the users cards"));
+            return res.json({ msg: "The user's cards:", allMyCards });
+        }
     } catch (error) {
         res.status(400).json({ error });
         console.log(chalk.redBright("Could'nt find the cards", error))
@@ -94,22 +100,44 @@ router.get("/:id", async (req, res) => {
         return res.status(500).send(err.message);
     }
 
-}).delete("/:id", authMw, permissionsMiddleware(false, false, true), async (req, res) => {
+}).patch("/:id/:biznumber", authMw, permissionsMiddleware(false, true, false), async (req, res) => {
     try {
         await cardsValidationService.createCardIdValidation(req.params.id);
-        const deletCard = await cardServiceModel.deleteCard(req.params.id)
-        if (deletCard) {
-            res.json({ msg: "card has been deleted", deletCard })
-            console.log(chalk.greenBright("The card has been deleted"))
-        } else {
-            res.json({ msg: "Could not find the card" })
-            console.log(chalk.redBright("Could not find the card"))
-        }
-    } catch (err) {
-        res.status(400).json(err);
-    }
+        const cardToChange = await cardServiceModel.getCardsById(req.params.id);
+        const cardId = { _id: (req.params.id) };
 
-});
+        if (user.isBusiness === true) {
+            const setIsBusiness = { $set: { isBusiness: false } };
+            await usersServiceModel.bizUserChange(userId, setIsBusiness);
+            console.log(chalk.greenBright("The user changed to normal account"));
+            return res.status(200).json({ msg: "The user changed to normal account", user });
+        } if (user.isBusiness === false) {
+            const setIsBusiness = { $set: { isBusiness: true } };
+            await usersServiceModel.bizUserChange(userId, setIsBusiness);
+            console.log(chalk.greenBright("The user changed to business account"));
+            return res.status(200).json({ msg: "The user changed to business account", user });
+        }
+    } catch (error) {
+        console.log(chalk.redBright("Could'nt edit the user", error));
+        res.status(400).json({ msg: "Could'nt edit the user", error })
+    }
+})
+    .delete("/:id", authMw, permissionsMiddleware(false, false, true), async (req, res) => {
+        try {
+            await cardsValidationService.createCardIdValidation(req.params.id);
+            const deletCard = await cardServiceModel.deleteCard(req.params.id)
+            if (deletCard) {
+                res.json({ msg: "card has been deleted", deletCard })
+                console.log(chalk.greenBright("The card has been deleted"))
+            } else {
+                res.json({ msg: "Could not find the card" })
+                console.log(chalk.redBright("Could not find the card"))
+            }
+        } catch (err) {
+            res.status(400).json(err);
+        }
+
+    });
 
 
 module.exports = router;

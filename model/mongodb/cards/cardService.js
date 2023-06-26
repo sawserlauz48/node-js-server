@@ -1,4 +1,5 @@
 const Card = require("./card");
+const { ObjectId } = require("mongoose").Types;
 
 const createCard = (cardToSave) => {
     let card = new Card(cardToSave)
@@ -9,8 +10,8 @@ const getAllCards = () => {
     return Card.find()
 }
 const getMyCards = (user_id) => {
-    return Card.find({ user_id: ObjectId(user_id) })
-}
+    return Card.find({ user_id: new ObjectId(user_id) });
+};
 const getCardsById = (id) => {
     return Card.findById(id)
 }
@@ -26,6 +27,9 @@ const likeCard = async (cardToSave) => {
 }
 const deleteCard = async (id) => {
     return Card.findByIdAndDelete(id)
+}
+const editCardBizNumber = async (filter, update) => {
+    return Card.updateOne(filter, update)
 }
 
 module.exports = {

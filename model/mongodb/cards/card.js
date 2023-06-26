@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Image = require("./Image");
+const Image = require("./image");
 const Address = require("./Address");
 const {
     URL,

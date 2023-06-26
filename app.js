@@ -13,10 +13,10 @@ const initailData = require("./initailData/initailData");
 
 var app = express();
 
-// app.use(cors({
-//     origin: "http://127.0.0.1:5500",
-//     optionsSuccessStatus: 200,
-// }));
+app.use(cors({
+    origin: "http://127.0.0.1:5500",
+    optionsSuccessStatus: 200,
+}));
 
 app.use(cors());
 
