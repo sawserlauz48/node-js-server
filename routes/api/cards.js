@@ -99,28 +99,6 @@ router.get("/:id", async (req, res) => {
         console.log(chalk.redBright("Could not edit like:", err.message));
         return res.status(500).send(err.message);
     }
-
-}).patch("/:id/:biznumber", authMw, permissionsMiddleware(false, true, false), async (req, res) => {
-    try {
-        await cardsValidationService.createCardIdValidation(req.params.id);
-        const cardToChange = await cardServiceModel.getCardsById(req.params.id);
-        const cardId = { _id: (req.params.id) };
-
-        if (user.isBusiness === true) {
-            const setIsBusiness = { $set: { isBusiness: false } };
-            await usersServiceModel.bizUserChange(userId, setIsBusiness);
-            console.log(chalk.greenBright("The user changed to normal account"));
-            return res.status(200).json({ msg: "The user changed to normal account", user });
-        } if (user.isBusiness === false) {
-            const setIsBusiness = { $set: { isBusiness: true } };
-            await usersServiceModel.bizUserChange(userId, setIsBusiness);
-            console.log(chalk.greenBright("The user changed to business account"));
-            return res.status(200).json({ msg: "The user changed to business account", user });
-        }
-    } catch (error) {
-        console.log(chalk.redBright("Could'nt edit the user", error));
-        res.status(400).json({ msg: "Could'nt edit the user", error })
-    }
 })
     .delete("/:id", authMw, permissionsMiddleware(false, false, true), async (req, res) => {
         try {

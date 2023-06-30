@@ -44,6 +44,7 @@ const deleteCard = async (id) => {
     }
 }
 
+
 module.exports = {
     createCard,
     getAllCards,
@@ -52,6 +53,7 @@ module.exports = {
     updateCard,
     likeCard,
     deleteCard,
-    getCardByBizNumber
+    getCardByBizNumber,
+    editCardBizNumber
 
 }

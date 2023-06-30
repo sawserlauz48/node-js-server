@@ -28,9 +28,7 @@ const likeCard = async (cardToSave) => {
 const deleteCard = async (id) => {
     return Card.findByIdAndDelete(id)
 }
-const editCardBizNumber = async (filter, update) => {
-    return Card.updateOne(filter, update)
-}
+
 
 module.exports = {
     createCard,
