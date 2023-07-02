@@ -54,6 +54,5 @@ module.exports = {
     likeCard,
     deleteCard,
     getCardByBizNumber,
-    editCardBizNumber
 
 }
